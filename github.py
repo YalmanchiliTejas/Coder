@@ -1,4 +1,7 @@
 from collections import defaultdict
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
 import requests
 import json
 import re
@@ -7,12 +10,72 @@ import gspread
 from google.oauth2.service_account import Credentials
 import google.generativeai as genai
 import os
+from datetime import datetime, timedelta
 
 
 GITHUB_PAT = os.environ.get("PAT")
 HUNTER = os.environ.get("HUNTER")
 GOOGLE_API = os.environ.get("GOOGLE_API")
 GOOGLE_CREDENTIALS_PATH= os.environ.get("PATH_CREDENTIALS")
+
+# def send_notification_email():
+#     """Send notification email when no new jobs are available"""
+#     try:
+#         msg = MIMEMultipart()
+#         msg['From'] = "tyalaman03@gmail.com"
+#         msg['To'] = "tejasrocks1234567890@gmail.com"
+#         msg['Subject'] = "No New Jobs Available Today"
+        
+#         body = f"""
+#         Hello,
+        
+#         The job scraping process has completed for {datetime.now().strftime('%Y-%m-%d')}.
+        
+#         No new jobs were found today - all discovered positions already exist in your spreadsheet.
+        
+#         Best regards,
+#         Job Scraper Bot
+#         """
+        
+#         msg.attach(MIMEText(body, 'plain'))
+        
+#         server = smtplib.SMTP('smtp.gmail.com', 587)
+#         server.starttls()
+#         server.login(G, GMAIL_PASSWORD)
+#         text = msg.as_string()
+#         server.sendmail(GMAIL_EMAIL, GMAIL_EMAIL, text)
+#         server.quit()
+        
+#         print("Notification email sent successfully!")
+        
+#     except Exception as e:
+#         print(f"Failed to send notification email: {e}")
+ 
+scopes = [
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ]
+credentials = Credentials.from_service_account_file(
+        GOOGLE_CREDENTIALS_PATH, scopes=scopes)
+client = gspread.authorize(credentials)
+spreadsheet_id = "1QQ3ptppaBKp1i3F-FBqF4rt9uMj5eMr7fr_7nCJV1Mo"
+sheet = client.open_by_key(spreadsheet_id).sheet1
+def get_existing_emails(sheet):
+    """Get all existing emails from the Google Sheet"""
+    try:
+        all_records = sheet.get_all_records()
+        existing_emails = set()
+        for record in all_records:
+            #email = record.get('Email', '').strip()  # Adjust column name as needed
+            company  = record.get('Company', '').strip()  # Adjust column name as needed
+            title = record.get('Role', '').strip()  # Adjust column name as needed
+            if company and title:
+                existing_emails.add((company.lower(), title.lower()))
+
+        return existing_emails
+    except Exception as e:
+        print(f"Error getting existing emails: {e}")
+        return set()
 def get_commits():
     url = "https://api.github.com/repos/vanshb03/New-Grad-2025/commits"
     headers = {
@@ -20,9 +83,16 @@ def get_commits():
         "Authorization": f"token {GITHUB_PAT}",
         'timeout': '500000'
     }
+    current_date = datetime.now()
+    two_days_ago = current_date - timedelta(days=2)
+    
+    # Format dates in ISO 8601 format (required by GitHub API)
+    since_date = two_days_ago.strftime("%Y-%m-%dT%H:%M:%SZ")
+
     params = {
-        "per_page": 1,
-        "page": 1
+        "per_page": 300,
+        "page": 1,
+        'since': since_date,
     }
     response = requests.get(url, headers=headers, params=params)
     commit_shas = []
@@ -40,12 +110,13 @@ def get_commit_details(commit_sha):
     response = requests.get(url, headers=headers)
     files = response.json().get('files', [])
     domains = []
+    existing = get_existing_emails()
     for file in files:
         patch = file.get('patch', 'No patch available')
-        domains.extend(parse_patch(patch))
+        domains.extend(parse_patch(patch, existing))
     print("commit_details_domains: ", domains)
     return domains
-def parse_patch(patch)-> list:
+def parse_patch(patch, existing)-> list:
     # print(patch)
     # json_strings = re.findall(r'\+{\+*?}', patch)
     # print(json_strings)
@@ -71,7 +142,8 @@ def parse_patch(patch)-> list:
 
     domains = []
     for res in results:
-        if res["sponsorship"].lower() != "offers sponsorship":
+        key = (res['company_name'].strip().lower(), res['title'].strip().lower())
+        if res["sponsorship"].lower() != "offers sponsorship" or key in existing:
             continue
         company_name = res['company_name']
         query = f"{company_name} official site"
@@ -142,16 +214,7 @@ def gemini_call(title):
 
 def google_sheets(persons):
 
-    
-    scopes = [
-        "https://www.googleapis.com/auth/spreadsheets",
-        "https://www.googleapis.com/auth/drive"
-    ]
-    credentials = Credentials.from_service_account_file(
-        GOOGLE_CREDENTIALS_PATH, scopes=scopes)
-    client = gspread.authorize(credentials)
-    spreadsheet_id = "1QQ3ptppaBKp1i3F-FBqF4rt9uMj5eMr7fr_7nCJV1Mo"
-    sheet = client.open_by_key(spreadsheet_id).sheet1
+   
   
     
     for email, name, department, company_name, title in persons:
@@ -166,6 +229,8 @@ if __name__ == "__main__":
    persons = []
    for sha in commit_sha:
         domains = get_commit_details(sha)
+        if domains is None or len(domains) == 0:
+            continue
         persons.extend(hunter_api(domains))
    google_sheets(persons)
         
