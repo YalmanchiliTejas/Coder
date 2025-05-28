@@ -22,6 +22,19 @@ jobs:
     - name: Install dependencies
       run: |
         pip install requests gspread google-auth google-generativeai googlesearch-python
+    - name: Create credentials file
+      run: |
+        cat > credentials.json << 'EOF'
+        ${{ secrets.SERVICE_ACCOUNT }}
+        EOF
+
+    - name: Verify credentials file
+      run: |
+        if [ ! -s credentials.json ]; then
+          echo "Error: credentials.json is empty!"
+          exit 1
+        fi
+        echo "Credentials file created successfully"
         
     - name: Run job tracker script
       env:
@@ -30,5 +43,4 @@ jobs:
         HUNTER: ${{secrets.HUNTER}}
         PATH_CREDENTIALS: ${{secrets.PATH_CREDENTIALS}}
       run: |
-        echo '${{ secrets.SERVICE_ACCOUNT }}' > credentials.json
         python github.py
