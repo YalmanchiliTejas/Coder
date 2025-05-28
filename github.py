@@ -6,11 +6,18 @@ from googlesearch import search
 import gspread
 from google.oauth2.service_account import Credentials
 import google.generativeai as genai
+import os
+
+
+GITHUB_PAT = os.environ.get("PAT")
+HUNTER = os.environ.get("HUNTER")
+GOOGLE_API = os.environ.get("GOOGLE_API")
+GOOGLE_CREDENTIALS_PATH= os.environ.get("PATH_CREDENTIALS")
 def get_commits():
     url = "https://api.github.com/repos/vanshb03/New-Grad-2025/commits"
     headers = {
         "Accept": "application/vnd.github.v3+json",
-        "Authorization": "token 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",
+        "Authorization": f"token {GITHUB_PAT}",
         'timeout': '500000'
     }
     params = {
@@ -27,7 +34,7 @@ def get_commit_details(commit_sha):
     url = f"https://api.github.com/repos/vanshb03/New-Grad-2025/commits/{commit_sha}"
     headers = {
         "Accept": "application/vnd.github.v3+json",
-        "Authorization": "token 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",
+        "Authorization": f"token {GITHUB_PAT}",
         "timeout": "500000"
     }
     response = requests.get(url, headers=headers)
@@ -91,7 +98,7 @@ def hunter_api(domains):
         url = f"https://api.hunter.io/v2/domain-search"
         params = {
             'domain': domain,
-            'api_key': '90f0cb4cf36b579977a6c7ca090a55374f15b217',
+            'api_key': HUNTER,
             'company': company_name,
             'department': 'hr,management,engineering',
             'required_filed': 'full_name'       
@@ -115,7 +122,7 @@ def hunter_api(domains):
         return outputs
 
 def gemini_call(title):
-    google_api_key = "AIzaSyB_V0B3ttXMYLn-4md_jEq_PdDRz7BJ0tM"
+    google_api_key = GOOGLE_API
     genai.configure(api_key=google_api_key)
     model = genai.GenerativeModel("gemini-2.0-flash")
     prompt = (  "Your task is to select an email subject line based on the provided job title. "
@@ -141,7 +148,7 @@ def google_sheets(persons):
         "https://www.googleapis.com/auth/drive"
     ]
     credentials = Credentials.from_service_account_file(
-        'credentials.json', scopes=scopes)
+        GOOGLE_CREDENTIALS_PATH, scopes=scopes)
     client = gspread.authorize(credentials)
     spreadsheet_id = "1QQ3ptppaBKp1i3F-FBqF4rt9uMj5eMr7fr_7nCJV1Mo"
     sheet = client.open_by_key(spreadsheet_id).sheet1
