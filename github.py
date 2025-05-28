@@ -56,7 +56,7 @@ scopes = [
         "https://www.googleapis.com/auth/drive"
     ]
 credentials = Credentials.from_service_account_file(
-        GOOGLE_CREDENTIALS_PATH, scopes=scopes)
+        "credentials.json", scopes=scopes)
 client = gspread.authorize(credentials)
 spreadsheet_id = "1QQ3ptppaBKp1i3F-FBqF4rt9uMj5eMr7fr_7nCJV1Mo"
 sheet = client.open_by_key(spreadsheet_id).sheet1
