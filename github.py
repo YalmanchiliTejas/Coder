@@ -86,7 +86,7 @@ def get_commits():
         'timeout': '50000000'
     }
     current_date = datetime.now()
-    two_days_ago = current_date - timedelta(days=4)
+    two_days_ago = current_date - timedelta(days=2)
     
     # Format dates in ISO 8601 format (required by GitHub API)
     since_date = two_days_ago.strftime("%Y-%m-%dT%H:%M:%SZ")
