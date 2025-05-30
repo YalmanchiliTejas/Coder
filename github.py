@@ -152,7 +152,9 @@ def parse_patch(patch, existing)-> list:
     domains = []
     for res in results:
         key = (res['company_name'].strip().lower(), res['title'].strip().lower())
-        
+        if key in existing:
+            continue
+
         company_name = res['company_name']
         query = f"{company_name} official site"
         search_results = search(query, num_results=1)
