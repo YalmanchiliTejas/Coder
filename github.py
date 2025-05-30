@@ -209,8 +209,8 @@ def gemini_call(title):
     model = genai.GenerativeModel("gemini-2.0-flash")
     prompt = (  "Your task is to select an email subject line based on the provided job title. "
                 "Choose from the following options: "
-                "1. 'Interested in Machine Learning Engineer New grad role' "
-                "2. 'Interested In software engineer new grad role' "
+                "1. 'Interested in Machine Learning Engineer New Grad Role' "
+                "2. 'Interested In Software Engineer New Grad Role' "
                 "3. 'Interested in New Grad Role' "
                 "Decision Rules: "
                 "- If the job title strongly indicates a Machine Learning, AI, or Data Science role, select option 1."
