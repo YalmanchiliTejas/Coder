@@ -99,6 +99,7 @@ def get_commits():
         print(f"Error fetching commits: {response.status_code}")
         return []
     if response.status_code == 200:
+        print(response)
         commit_shas = []
         for i in response.json():
             commit_shas.append(i['sha'])
