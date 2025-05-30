@@ -117,7 +117,7 @@ def get_commit_details(commit_sha):
     files = response.json().get('files', [])
     domains = []
     existing = get_existing_emails(sheet)
-    print(files, flush=True)
+    
     for file in files:
         patch = file.get('patch', 'No patch available')
         domains.extend(parse_patch(patch, existing))
@@ -127,6 +127,7 @@ def parse_patch(patch, existing)-> list:
     # print(patch)
     # json_strings = re.findall(r'\+{\+*?}', patch)
     # print(json_strings)
+    print(patch, flush=True)
     companies = re.findall(
     r'^\s*\+\s*"company_name"\s*:\s*"([^"]+)"',
     patch,
