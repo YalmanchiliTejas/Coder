@@ -42,4 +42,4 @@ jobs:
         GOOGLE_API_KEY: ${{secrets.GOOGLE_API}}
         HUNTER: ${{secrets.HUNTER}}
       run: |
-        python github.py
+        python -u github.py
