@@ -127,7 +127,7 @@ def parse_patch(patch, existing)-> list:
     # print(patch)
     # json_strings = re.findall(r'\+{\+*?}', patch)
     # print(json_strings)
-    print(patch, flush=True)
+    
     companies = re.findall(
     r'^\s*\+\s*"company_name"\s*:\s*"([^"]+)"',
     patch,
@@ -151,8 +151,7 @@ def parse_patch(patch, existing)-> list:
     domains = []
     for res in results:
         key = (res['company_name'].strip().lower(), res['title'].strip().lower())
-        if res["sponsorship"].lower() != "offers sponsorship" or key in existing:
-            continue
+        
         company_name = res['company_name']
         query = f"{company_name} official site"
         search_results = search(query, num_results=1)
