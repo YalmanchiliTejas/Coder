@@ -117,6 +117,7 @@ def get_commit_details(commit_sha):
     files = response.json().get('files', [])
     domains = []
     existing = get_existing_emails(sheet)
+    print(files, flush=True)
     for file in files:
         patch = file.get('patch', 'No patch available')
         domains.extend(parse_patch(patch, existing))
