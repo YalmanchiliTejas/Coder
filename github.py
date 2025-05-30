@@ -10,6 +10,7 @@ import gspread
 from google.oauth2.service_account import Credentials
 import google.generativeai as genai
 import os
+import time
 from datetime import datetime, timedelta
 
 
@@ -215,6 +216,7 @@ def gemini_call(title):
                 "- For all other cases, or if the role is ambiguous or a general new graduate position (like 'Quantitative Trader', 'Business Analyst', 'Product Manager new grad'), select option 3."
                 "Job Title: "f"{title}\n"
                 "Respond with ONLY the selected subject line text.")
+    time.sleep(15)
     response = model.generate_content(prompt)
     print(response.text.strip())
     return response.text.strip()
