@@ -82,16 +82,16 @@ def get_commits():
     headers = {
         "Accept": "application/vnd.github.v3+json",
         "Authorization": f"token {GITHUB_PAT}",
-        'timeout': '500000'
+        'timeout': '50000000'
     }
     current_date = datetime.now()
-    two_days_ago = current_date - timedelta(days=2)
+    two_days_ago = current_date - timedelta(days=4)
     
     # Format dates in ISO 8601 format (required by GitHub API)
     since_date = two_days_ago.strftime("%Y-%m-%dT%H:%M:%SZ")
 
     params = {
-        "per_page": 300,
+        "per_page": 100,
         "page": 1,
         'since': since_date,
     }
