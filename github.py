@@ -16,7 +16,7 @@ from datetime import datetime, timedelta
 GITHUB_PAT = os.environ.get("GITHUB_PAT")
 HUNTER = os.environ.get("HUNTER")
 GOOGLE_API = os.environ.get("GOOGLE_API_KEY")
-print("DEBUG token present?", bool(os.getenv("PAT")), flush=True)
+
 
 
 # def send_notification_email():
@@ -116,7 +116,7 @@ def get_commit_details(commit_sha):
     response = requests.get(url, headers=headers)
     files = response.json().get('files', [])
     domains = []
-    existing = get_existing_emails()
+    existing = get_existing_emails(sheet)
     for file in files:
         patch = file.get('patch', 'No patch available')
         domains.extend(parse_patch(patch, existing))
