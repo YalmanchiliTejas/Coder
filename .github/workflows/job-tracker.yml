@@ -41,6 +41,5 @@ jobs:
         GITHUB_PAT: ${{secrets.PAT}}
         GOOGLE_API_KEY: ${{secrets.GOOGLE_API}}
         HUNTER: ${{secrets.HUNTER}}
-        PATH_CREDENTIALS: ${{secrets.PATH_CREDENTIALS}}
       run: |
         python github.py

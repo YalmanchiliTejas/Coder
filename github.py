@@ -16,7 +16,7 @@ from datetime import datetime, timedelta
 GITHUB_PAT = os.environ.get("PAT")
 HUNTER = os.environ.get("HUNTER")
 GOOGLE_API = os.environ.get("GOOGLE_API")
-GOOGLE_CREDENTIALS_PATH= os.environ.get("PATH_CREDENTIALS")
+
 
 # def send_notification_email():
 #     """Send notification email when no new jobs are available"""
