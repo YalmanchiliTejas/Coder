@@ -95,6 +95,7 @@ def get_commits():
         'since': since_date,
     }
     response = requests.get(url, headers=headers, params=params)
+    print(response)
     if response.status_code != 200:
         print(f"Error fetching commits: {response.status_code}")
         return []
