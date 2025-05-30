@@ -95,11 +95,14 @@ def get_commits():
         'since': since_date,
     }
     response = requests.get(url, headers=headers, params=params)
-    commit_shas = []
-    for i in response.json():
-        commit_shas.append(i['sha'])
-    print(commit_shas)
-    return commit_shas 
+    if response.status_code != 200:
+        print(f"Error fetching commits: {response.status_code}")
+        return []
+    if response.status_code == 200:
+        commit_shas = []
+        for i in response.json():
+            commit_shas.append(i['sha'])
+        return commit_shas 
 def get_commit_details(commit_sha):
     url = f"https://api.github.com/repos/vanshb03/New-Grad-2025/commits/{commit_sha}"
     headers = {
