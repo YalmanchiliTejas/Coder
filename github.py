@@ -13,9 +13,9 @@ import os
 from datetime import datetime, timedelta
 
 
-GITHUB_PAT = os.environ.get("PAT")
+GITHUB_PAT = os.environ.get("GITHUB_PAT")
 HUNTER = os.environ.get("HUNTER")
-GOOGLE_API = os.environ.get("GOOGLE_API")
+GOOGLE_API = os.environ.get("GOOGLE_API_KEY")
 print("DEBUG token present?", bool(os.getenv("PAT")), flush=True)
 
 
