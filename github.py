@@ -79,7 +79,8 @@ def get_existing_emails(sheet):
         print(f"Error getting existing emails: {e}")
         return set()
 def get_commits():
-    url = "https://api.github.com/repos/vanshb03/New-Grad-2025/commits"
+    #url = "https://api.github.com/repos/vanshb03/New-Grad-2025/commits"
+    url = "https://github.com/SimplifyJobs/New-Grad-Positions/commits/dev"
     headers = {
         "Accept": "application/vnd.github.v3+json",
         "Authorization": f"token {GITHUB_PAT}",
@@ -210,7 +211,7 @@ def gemini_call(title):
     prompt = (  "Your task is to select an email subject line based on the provided job title. "
                 "Choose from the following options: "
                 "1. 'Interested in Machine Learning Engineer New Grad Role' "
-                "2. 'Interested In Software Engineer New Grad Role' "
+                "2. 'Interested In Software Engineer Role'"
                 "3. 'Interested in New Grad Role' "
                 "Decision Rules: "
                 "- If the job title strongly indicates a Machine Learning, AI, or Data Science role, select option 1."
