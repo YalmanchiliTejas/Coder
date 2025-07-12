@@ -103,11 +103,13 @@ def get_commits():
         print(f"Error fetching commits: {response.status_code}")
         return []
     if response.status_code == 200:
-        print(response)
+        
         commit_shas = []
-        print(response.json())
+        
         for i in response.json():
-            commit_shas.append(i['sha'])
+            commit_message = i.get("commit", {}).get("message", "")
+            if commit_message.startswith("Updated listing.json"):
+                    commit_shas.append(i['sha'])
         return commit_shas 
 def get_commit_details(commit_sha):
     url = f"https://api.github.com/repos/SimplifyJobs/New-Grad-Positions/commits/{commit_sha}"
