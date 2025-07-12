@@ -80,7 +80,7 @@ def get_existing_emails(sheet):
         return set()
 def get_commits():
     #url = "https://api.github.com/repos/vanshb03/New-Grad-2025/commits"
-    url = "https://github.com/SimplifyJobs/New-Grad-Positions/commits"
+    url = "https://api.github.com/repos/SimplifyJobs/New-Grad-Positions/commits/"
     headers = {
         "Accept": "application/vnd.github.v3+json",
         "Authorization": f"token {GITHUB_PAT}",
@@ -110,7 +110,7 @@ def get_commits():
             commit_shas.append(i['sha'])
         return commit_shas 
 def get_commit_details(commit_sha):
-    url = f"https://api.github.com/repos/vanshb03/New-Grad-2025/commits/{commit_sha}"
+    url = f"https://api.github.com/repos/SimplifyJobs/New-Grad-Positions/commits/{commit_sha}"
     headers = {
         "Accept": "application/vnd.github.v3+json",
         "Authorization": f"token {GITHUB_PAT}",
@@ -146,9 +146,14 @@ def parse_patch(patch, existing)-> list:
         patch,
         re.MULTILINE
     )
+    active = re.findall(
+        r'^\s*\+\s*"active"\s*:\s*(true|false)', 
+        patch,
+        re.MULTILINE
+    )
     results = [
-        {"company_name": c, "title": t, "sponsorship": s}
-        for c, t, s in zip(companies, titles, sponsors)
+        {"company_name": c, "title": t, "sponsorship": s, "active": a == "true"}
+        for c, t, s in zip(companies, titles, sponsors, active)
     ]
 
     domains = []
