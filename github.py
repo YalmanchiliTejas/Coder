@@ -107,7 +107,7 @@ def get_commits():
         commit_shas = []
         
         for i in response.json():
-            commit_message = i.get("commit", {}).get("message", "")
+            commit_message = i.get('commit', {}).get('message', "")
             if commit_message.startswith("Updated listing.json"):
                     commit_shas.append(i['sha'])
         return commit_shas 
