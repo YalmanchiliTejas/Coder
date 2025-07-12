@@ -80,7 +80,7 @@ def get_existing_emails(sheet):
         return set()
 def get_commits():
     #url = "https://api.github.com/repos/vanshb03/New-Grad-2025/commits"
-    url = "https://api.github.com/repos/SimplifyJobs/New-Grad-Positions/commits/"
+    url = "https://api.github.com/repos/SimplifyJobs/New-Grad-Positions/commits"
     headers = {
         "Accept": "application/vnd.github.v3+json",
         "Authorization": f"token {GITHUB_PAT}",
