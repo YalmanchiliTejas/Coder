@@ -247,7 +247,7 @@ def google_sheets(persons):
 if __name__ == "__main__":
    commit_sha =  get_commits()
    persons = []
-   print("commit_sha: ", commit_sha, flush=True)
+   print("commit_sha: ", len(commit_sha), flush=True)
    for sha in commit_sha:
         domains = get_commit_details(sha)
 
