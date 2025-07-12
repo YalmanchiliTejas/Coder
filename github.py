@@ -83,7 +83,8 @@ def get_commits():
     url = "https://api.github.com/repos/SimplifyJobs/New-Grad-Positions/commits"
     headers = {
         "Accept": "application/vnd.github.v3+json",
-        "Authorization": f"token {GITHUB_PAT}"
+        "Authorization": f"token {GITHUB_PAT}",
+        'timeout' : '50000000'
     }
     current_date = datetime.now()
     two_days_ago = current_date - timedelta(days=2)
@@ -96,7 +97,7 @@ def get_commits():
         "page": 1,
         'since': since_date,
     }
-    response = requests.get(url, headers=headers, params=params, timeout=60)
+    response = requests.get(url, headers=headers, params=params)
     print(response, flush=True)
     if response.status_code != 200:
         print(f"Error fetching commits: {response.status_code}")
