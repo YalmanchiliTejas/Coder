@@ -111,7 +111,7 @@ def get_commits():
             if commit_message.startswith("Updating listings.json"):
                     commit_shas.append(i['sha'])
         return commit_shas 
-def get_commit_details(commit_sha):
+def get_commit_details(commit_sha, existing):
     url = f"https://api.github.com/repos/SimplifyJobs/New-Grad-Positions/commits/{commit_sha}"
     headers = {
         "Accept": "application/vnd.github.v3+json",
@@ -121,9 +121,7 @@ def get_commit_details(commit_sha):
     response = requests.get(url, headers=headers)
     files = response.json().get('files', [])
     domains = []
-    existing = get_existing_emails(sheet)
-    time.sleep(30)
-    
+    #existing = get_existing_emails(sheet)    
     for file in files:
         patch = file.get('patch', 'No patch available')
         domains.extend(parse_patch(patch, existing))
@@ -249,11 +247,14 @@ if __name__ == "__main__":
    commit_sha =  get_commits()
    persons = []
    print("commit_sha: ", len(commit_sha), flush=True)
+   existing = get_existing_emails(sheet)
    for sha in commit_sha:
-        domains = get_commit_details(sha)
+        domains = get_commit_details(sha, existing)
 
         if domains is None or len(domains) == 0:
             continue
+        for domain, title, company_name in domains:
+                existing.add(company_name.strip().lower(), title.strip().lower())
         persons.extend(hunter_api(domains))
    google_sheets(persons)
         
