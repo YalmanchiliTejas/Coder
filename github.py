@@ -254,7 +254,7 @@ if __name__ == "__main__":
         if domains is None or len(domains) == 0:
             continue
         for domain, title, company_name in domains:
-                existing.add(company_name.strip().lower(), title.strip().lower())
+                existing.add((company_name.strip().lower(), title.strip().lower()))
         persons.extend(hunter_api(domains))
    google_sheets(persons)
         
