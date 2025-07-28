@@ -212,25 +212,31 @@ def hunter_api(domains):
         return outputs
 
 def gemini_call(title):
-    google_api_key = GOOGLE_API
-    genai.configure(api_key=google_api_key)
-    model = genai.GenerativeModel("gemini-2.0-flash")
-    prompt = (  "Your task is to select an email subject line based on the provided job title. "
-                "Choose from the following options: "
-                "1. 'Interested in Machine Learning Engineer New Grad Role' "
-                "2. 'Interested In Software Engineer Role'"
-                "3. 'Interested in New Grad Role' "
-                "Decision Rules: "
-                "- If the job title strongly indicates a Machine Learning, AI, or Data Science role, select option 1."
-                "- If the job title strongly indicates a Software Engineering, Software Development, or general programming role (and is not primarily ML/AI/Data Science), select option 2."
-                "- For all other cases, or if the role is ambiguous or a general new graduate position (like 'Quantitative Trader', 'Business Analyst', 'Product Manager new grad'), select option 3."
-                "Job Title: "f"{title}\n"
-                "Respond with ONLY the selected subject line text.")
-    time.sleep(15)
-    response = model.generate_content(prompt)
-    print(response.text.strip())
-    return response.text.strip()
+    # google_api_key = GOOGLE_API
+    # genai.configure(api_key=google_api_key)
+    # model = genai.GenerativeModel("gemini-2.0-flash")
+    # prompt = (  "Your task is to select an email subject line based on the provided job title. "
+    #             "Choose from the following options: "
+    #             "1. 'Interested in Machine Learning Engineer New Grad Role' "
+    #             "2. 'Interested In Software Engineer Role'"
+    #             "3. 'Interested in New Grad Role' "
+    #             "Decision Rules: "
+    #             "- If the job title strongly indicates a Machine Learning, AI, or Data Science role, select option 1."
+    #             "- If the job title strongly indicates a Software Engineering, Software Development, or general programming role (and is not primarily ML/AI/Data Science), select option 2."
+    #             "- For all other cases, or if the role is ambiguous or a general new graduate position (like 'Quantitative Trader', 'Business Analyst', 'Product Manager new grad'), select option 3."
+    #             "Job Title: "f"{title}\n"
+    #             "Respond with ONLY the selected subject line text.")
+    # time.sleep(15)
+    # response = model.generate_content(prompt)
+    # print(response.text.strip())
+    # return response.text.strip()
 
+    rules = [(re.compile(r'\b(machine learning|ml|ai|artificial intelligence|data science|data engineer|deep learning|data scientist|data analyst|ml engineer)', re.IGNORECASE), "Interested in Machine Learning Engineer New Grad Role"), (re.compile(r'\b(software engineer|software developer|programmer|fullstack developer|backend developer|frontend developer|web developer|database|swe|sde)', re.IGNORECASE), "Interested In Software Engineer Role")]
+    default_subject = "Interested in New Grad Role"
+    for pattern, subject in rules:
+        if pattern.search(title):
+            return subject
+    return default_subject
 def google_sheets(persons):
 
    
